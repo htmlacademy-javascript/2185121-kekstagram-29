@@ -1,31 +1,17 @@
 // функция для проверки длины строки.
-const checksLengthString = (string,length) => {
-  const result = (string.length <= length);
-  return result;
-};
-checksLengthString('привет',6);
+const checkLengthString = (string, length) => string.length <= length;
+checkLengthString('привет', 6);
 
 // Функция для проверки, является ли строка палиндромом
-const checksPalindrome = (string) => {
-  const recycledString = string.toUpperCase().replaceAll(' ','');
-  let reverse = '';
-  for(let i = -1; i >= (recycledString.length * -1);i--) {
-    reverse += recycledString.at(i);
-  }
-  return (recycledString === reverse);
+const checkPalindrome = (string) => {
+  string = string.toLowerCase().replaceAll(' ','');
+  return string === string.split('').reverse().join('');
 };
-checksPalindrome('До во д');
+checkPalindrome('До во д');
 
 //принимает строку или число, извлекает содержащиеся в ней цифры
-const extractsDigits = (string) => {
-  string = String(string);
-  let result = '';
-  for(let i = 0;i < (string.length);i++) {
-    if (Number(string[i]) || string[i] === '0') {
-      result += string[i];
-    }
-  }
-  result = (result.length === 0) ? NaN : result;
-  return Number(result);
+const extractDigits = (string) => {
+  string = String(string).replace(/\D/g, '');
+  return parseInt(string, 10);
 };
-extractsDigits('rffd -1 78 0.5 14tfH9');
+extractDigits('rffd -1 78 0.5 14tfH9');
