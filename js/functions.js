@@ -17,22 +17,21 @@ const extractDigits = (string) => {
 extractDigits('rffd -1 78 0.5 14tfH9');
 
 // Высчитывает укладывается ли встреча в рабочий день
-const calculatesTime = (startWork, endWork, startMeeting, durationMeeting) => {
-  startWork = startWork.split(':');
-  const startMin = Number(startWork[0] * 60) + Number(startWork[1]);
+const getMinutes = (time) => {
+  const times = time.split(':');
+  return Number(times[0] * 60) + Number(times[1]);
+};
 
-  endWork = endWork.split(':');
-  const endMin = Number(endWork[0] * 60) + Number(endWork[1]);
+const isWorkingDay = (startWork, endWork, startMeeting, durationMeeting) => {
+  const startMin = getMinutes(startWork) ;
+  const endMin = getMinutes(endWork);
+  const startMeetingMin = getMinutes(startMeeting);
+  const timeLeft = endMin - startMeetingMin;
 
-  startMeeting = startMeeting.split(':');
-  const startMeetingMin = Number(startMeeting[0] * 60) + Number(startMeeting[1]);
-
-  if (startMeetingMin >= startMin && startMeetingMin <= endMin) {
-    if ((endMin - startMeetingMin) >= durationMeeting) {
-      return true;
-    }
+  if (startMeetingMin >= startMin && timeLeft >= durationMeeting) {
+    return true;
   }
   return false;
 };
 
-calculatesTime('08:00', '17:30', '14:00', 90);
+isWorkingDay('08:00', '17:30', '14:00', 90);
