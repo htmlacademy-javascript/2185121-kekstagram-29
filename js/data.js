@@ -2,9 +2,6 @@ import {getRandomNumber, getRandomArrayElement} from './util.js';
 
 const PHOTO_COUNT = 25;
 
-let integerId = 1;
-let commentsId = 1;
-
 const DESCRIPTIONS = [
   'Красиво',
   'и правда',
@@ -53,6 +50,9 @@ const Comments = {
   MIN: 1,
   MAX: 30
 };
+
+let integerId = 1;
+let commentsId = 1;
 
 const createMessage = () => {
   const messages = Array.from({length: getRandomNumber(1, 2)}, () => getRandomArrayElement(MESSAGES));

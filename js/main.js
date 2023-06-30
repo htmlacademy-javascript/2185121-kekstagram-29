@@ -1,3 +1,4 @@
 import {createCards} from './data.js';
+import {renderThumbnails} from './render-thumbnails.js';
 
-createCards();
+renderThumbnails(createCards());
