@@ -15,12 +15,6 @@ const commentsTemplate = commentsList.querySelector('.social__comment');
 
 let indexNumber = 0;
 
-const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    closeUserModal();
-  }
-};
 
 const createComments = () => {
   commentsList.textContent = '';
@@ -44,6 +38,7 @@ const createBigPicture = () => {
   bigPictureCommentsCount.textContent = currentDataElement.comments.length;
 };
 
+
 const openUserModal = () => {
   createBigPicture();
   createComments();
@@ -61,6 +56,13 @@ const closeUserModal = () => {
   commentsLoader.classList.remove('hidden');
   document.removeEventListener('keydown', onDocumentKeydown);
 };
+
+function onDocumentKeydown (evt) {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeUserModal();
+  }
+}
 
 buttonClose.addEventListener('click', () => {
   closeUserModal();
