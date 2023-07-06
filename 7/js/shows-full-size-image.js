@@ -4,8 +4,8 @@ const bigPictureContainer = document.querySelector('.big-picture');
 const buttonClose = bigPictureContainer.querySelector('.big-picture__cancel');
 const container = document.querySelector('.pictures');
 const bodyContainer = document.querySelector('body');
-const commentsCount = bigPictureContainer.querySelector('.social__comment-count');
-const commentsLoader = bigPictureContainer.querySelector('.comments-loader');
+// const commentsCount = bigPictureContainer.querySelector('.social__comment-count');
+// const commentsLoader = bigPictureContainer.querySelector('.comments-loader');
 const bigPictureImage = bigPictureContainer.querySelector('.big-picture__img img');
 const bigPictureDescription = bigPictureContainer.querySelector('.social__caption');
 const bigPictureLikes = bigPictureContainer.querySelector('.likes-count');
@@ -15,19 +15,20 @@ const commentsTemplate = commentsList.querySelector('.social__comment');
 
 let indexNumber = 0;
 
+const createComment = (element) => {
+  const newComment = commentsTemplate.cloneNode(true);
+  const image = newComment.querySelector('.social__picture');
+  const text = newComment.querySelector('.social__text');
+  image.src = element.avatar;
+  image.alt = element.name;
+  text.textContent = element.message;
+  commentsList.append(newComment);
+};
 
 const createComments = () => {
   commentsList.textContent = '';
   const commentsArray = data[indexNumber].comments;
-  commentsArray.forEach((element) => {
-    const newComment = commentsTemplate.cloneNode(true);
-    const image = newComment.querySelector('.social__picture');
-    const text = newComment.querySelector('.social__text');
-    image.src = element.avatar;
-    image.alt = element.name;
-    text.textContent = element.message;
-    commentsList.append(newComment);
-  });
+  commentsArray.forEach((element) => createComment(element));
 };
 
 const createBigPicture = () => {
@@ -44,20 +45,20 @@ const openUserModal = () => {
   createComments();
   bigPictureContainer.classList.remove('hidden');
   bodyContainer.classList.add('modal-open');
-  commentsCount.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+  // commentsCount.classList.add('hidden');
+  // commentsLoader.classList.add('hidden');
   document.addEventListener('keydown', onDocumentKeydown);
 };
 
 const closeUserModal = () => {
   bigPictureContainer.classList.add('hidden');
   bodyContainer.classList.remove('modal-open');
-  commentsCount.classList.remove('hidden');
-  commentsLoader.classList.remove('hidden');
+  // commentsCount.classList.remove('hidden');
+  // commentsLoader.classList.remove('hidden');
   document.removeEventListener('keydown', onDocumentKeydown);
 };
 
-function onDocumentKeydown (evt) {
+function onDocumentKeydown(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     closeUserModal();
