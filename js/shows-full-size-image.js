@@ -1,102 +1,105 @@
 import { isEscapeKey } from './util.js';
-import { data } from './render-thumbnails.js';
+
+const COMMENT_COUNTER = 5;
 
 const bigPictureContainer = document.querySelector('.big-picture');
-const buttonClose = bigPictureContainer.querySelector('.big-picture__cancel');
+const buttonClose = document.querySelector('.big-picture__cancel');
 const container = document.querySelector('.pictures');
-const bodyContainer = document.querySelector('body');
-const commentsCount = bigPictureContainer.querySelector('.social__comment-count');
-const bigPictureImage = bigPictureContainer.querySelector('.big-picture__img img');
-const bigPictureDescription = bigPictureContainer.querySelector('.social__caption');
-const bigPictureLikes = bigPictureContainer.querySelector('.likes-count');
-const commentsContainer = bigPictureContainer.querySelector('.social__comments');
-const commentsTemplate = commentsContainer.querySelector('.social__comment');
-const commentsLoaderButton = bigPictureContainer.querySelector('.comments-loader');
+const commentsCount = document.querySelector('.social__comment-count');
+const bigPictureImage = document.querySelector('.big-picture__img img');
+const bigPictureDescription = document.querySelector('.social__caption');
+const bigPictureLikes = document.querySelector('.likes-count');
+const commentsContainer = document.querySelector('.social__comments');
+const commentsTemplate = document.querySelector('.social__comment');
+const commentsLoaderButton = document.querySelector('.comments-loader');
 
-let indexNumber = 0;
-let commentsNumberCounter;
+let showingComments = 0;
+let comments;
+
+const fillCommentsCounter = () => {
+  commentsCount.innerHTML = `${showingComments} из <span class="comments-count">${comments.length}</span> комментариев`;
+};
+
+const setButtonState = () => {
+  if (showingComments >= comments.length) {
+    commentsLoaderButton.classList.add('hidden');
+    return;
+  }
+  commentsLoaderButton.classList.remove('hidden');
+};
 
 const createComment = (element) => {
   const newComment = commentsTemplate.cloneNode(true);
   const image = newComment.querySelector('.social__picture');
-  const text = newComment.querySelector('.social__text');
   image.src = element.avatar;
   image.alt = element.name;
-  text.textContent = element.message;
-  newComment.classList.add('hidden');
-  commentsContainer.append(newComment);
+  newComment.querySelector('.social__text').textContent = element.message;
+
+  return newComment;
 };
 
-const createBigPicture = () => {
-  const currentDataElement = data[indexNumber];
-  bigPictureDescription.textContent = currentDataElement.description;
-  bigPictureImage.src = currentDataElement.url;
-  bigPictureLikes.textContent = currentDataElement.likes;
+const renderComments = () => {
+  const fragment = document.createDocumentFragment();
+  const currentComments = comments.slice(showingComments, showingComments + COMMENT_COUNTER);
+  showingComments = Math.min(showingComments + COMMENT_COUNTER, comments.length);
+  currentComments.forEach((comment) => fragment.append(createComment(comment)));
+  commentsContainer.append(fragment);
+  setButtonState();
+  fillCommentsCounter();
 };
 
-const createComments = () => {
-  commentsContainer.textContent = '';
-  const commentsArray = data[indexNumber].comments;
-  commentsArray.forEach((element) => createComment(element));
+const fillUserModal = (data) => {
+  bigPictureDescription.textContent = data.description;
+  bigPictureImage.src = data.url;
+  bigPictureLikes.textContent = data.likes;
+  renderComments();
 };
-
-//Проверка на сколько коментариев
-const checkQuantityComments = () => {
-  const commentsList = commentsContainer.querySelectorAll('.social__comment');
-  if (commentsList.length - commentsNumberCounter <= 0) {
-    commentsList.forEach((value) => {
-      value.classList.remove('hidden');
-    });
-    commentsCount.innerHTML = `${commentsList.length} из <span class="comments-count">${commentsList.length}</span> комментариев`;
-    commentsLoaderButton.classList.add('hidden');
-  } else {
-    for (let i = 0; i < commentsNumberCounter; i++) {
-      commentsList[i].classList.remove('hidden');
-    }
-    commentsCount.innerHTML = `${commentsNumberCounter} из <span class="comments-count">${commentsList.length}</span> комментариев`;
-    commentsNumberCounter += 5;
-  }
-};
-
 
 const openUserModal = () => {
-  createBigPicture();
-  createComments();
-  commentsNumberCounter = 5;
-  checkQuantityComments();
-  commentsLoaderButton.addEventListener('click', checkQuantityComments);
   bigPictureContainer.classList.remove('hidden');
-  bodyContainer.classList.add('modal-open');
+  document.body.classList.add('modal-open');
+  buttonClose.addEventListener('click', onButtonCloseClick);
+  commentsLoaderButton.addEventListener('click', onCommentsLoaderButtonClick);
   document.addEventListener('keydown', onDocumentKeydown);
 };
 
 const closeUserModal = () => {
   bigPictureContainer.classList.add('hidden');
-  bodyContainer.classList.remove('modal-open');
-  commentsLoaderButton.removeEventListener('click', checkQuantityComments);
-  commentsLoaderButton.classList.remove('hidden');
+  document.body.classList.remove('modal-open');
+  buttonClose.removeEventListener('click', onButtonCloseClick);
+  commentsLoaderButton.removeEventListener('click', onCommentsLoaderButtonClick);
   document.removeEventListener('keydown', onDocumentKeydown);
+  showingComments = 0;
 };
 
+//функции обработчиков
 function onDocumentKeydown(evt) {
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt) && !evt.target.closest('.social__footer-text')) {
     evt.preventDefault();
     closeUserModal();
   }
 }
 
-buttonClose.addEventListener('click', () => {
-  closeUserModal();
-});
+function onCommentsLoaderButtonClick(evt) {
+  evt.preventDefault();
+  renderComments();
+}
 
-// обработчик событий клика на миниатюры
-const onThumbnailsClick = (evt) => {
-  const pictureList = document.querySelectorAll('.picture');
-  if (evt.target.closest('.picture')) {
-    const clickedElement = evt.target.closest('.picture');
-    indexNumber = Array.prototype.indexOf.call(pictureList, clickedElement);
-    openUserModal();
+function onButtonCloseClick(evt) {
+  evt.preventDefault();
+  closeUserModal();
+}
+
+//Функция создания большой картинки и проверка что есть на странице контейнер,чтоб код не ломался
+const showFullSizeImage = (data) => {
+  if (!container) {
+    return;
   }
+  commentsContainer.textContent = '';
+  comments = data.comments;
+  fillUserModal(data);
+
+  openUserModal();
 };
 
-container.addEventListener('click', onThumbnailsClick);
+export { showFullSizeImage };

@@ -1,4 +1,5 @@
 import { createCards } from './data.js';
+import { showFullSizeImage } from './shows-full-size-image.js';
 
 const template = document.querySelector('#picture')
   .content
@@ -15,6 +16,11 @@ const createThumbnail = (picture) => {
   newThumbnail.querySelector('.picture__likes').textContent = picture.likes;
   newThumbnail.querySelector('.picture__comments').textContent = picture.comments.length;
 
+  newThumbnail.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    showFullSizeImage(picture);
+  });
+
   return newThumbnail;
 };
 
@@ -23,4 +29,4 @@ const renderThumbnails = () => {
   container.append(fragment);
 };
 
-export { renderThumbnails, data };
+export { renderThumbnails };
