@@ -1,19 +1,20 @@
 import { isEscapeKey } from './util.js';
 import { data } from './render-thumbnails.js';
+
 const bigPictureContainer = document.querySelector('.big-picture');
 const buttonClose = bigPictureContainer.querySelector('.big-picture__cancel');
 const container = document.querySelector('.pictures');
 const bodyContainer = document.querySelector('body');
-// const commentsCount = bigPictureContainer.querySelector('.social__comment-count');
-// const commentsLoader = bigPictureContainer.querySelector('.comments-loader');
+const commentsCount = bigPictureContainer.querySelector('.social__comment-count');
 const bigPictureImage = bigPictureContainer.querySelector('.big-picture__img img');
 const bigPictureDescription = bigPictureContainer.querySelector('.social__caption');
 const bigPictureLikes = bigPictureContainer.querySelector('.likes-count');
-const bigPictureCommentsCount = bigPictureContainer.querySelector('.comments-count');
-const commentsList = bigPictureContainer.querySelector('.social__comments');
-const commentsTemplate = commentsList.querySelector('.social__comment');
+const commentsContainer = bigPictureContainer.querySelector('.social__comments');
+const commentsTemplate = commentsContainer.querySelector('.social__comment');
+const commentsLoaderButton = bigPictureContainer.querySelector('.comments-loader');
 
 let indexNumber = 0;
+let commentsNumberCounter;
 
 const createComment = (element) => {
   const newComment = commentsTemplate.cloneNode(true);
@@ -22,13 +23,8 @@ const createComment = (element) => {
   image.src = element.avatar;
   image.alt = element.name;
   text.textContent = element.message;
-  commentsList.append(newComment);
-};
-
-const createComments = () => {
-  commentsList.textContent = '';
-  const commentsArray = data[indexNumber].comments;
-  commentsArray.forEach((element) => createComment(element));
+  newComment.classList.add('hidden');
+  commentsContainer.append(newComment);
 };
 
 const createBigPicture = () => {
@@ -36,25 +32,49 @@ const createBigPicture = () => {
   bigPictureDescription.textContent = currentDataElement.description;
   bigPictureImage.src = currentDataElement.url;
   bigPictureLikes.textContent = currentDataElement.likes;
-  bigPictureCommentsCount.textContent = currentDataElement.comments.length;
+};
+
+const createComments = () => {
+  commentsContainer.textContent = '';
+  const commentsArray = data[indexNumber].comments;
+  commentsArray.forEach((element) => createComment(element));
+};
+
+//Проверка на сколько коментариев
+const checkQuantityComments = () => {
+  const commentsList = commentsContainer.querySelectorAll('.social__comment');
+  if (commentsList.length - commentsNumberCounter <= 0) {
+    commentsList.forEach((value) => {
+      value.classList.remove('hidden');
+    });
+    commentsCount.innerHTML = `${commentsList.length} из <span class="comments-count">${commentsList.length}</span> комментариев`;
+    commentsLoaderButton.classList.add('hidden');
+  } else {
+    for (let i = 0; i < commentsNumberCounter; i++) {
+      commentsList[i].classList.remove('hidden');
+    }
+    commentsCount.innerHTML = `${commentsNumberCounter} из <span class="comments-count">${commentsList.length}</span> комментариев`;
+    commentsNumberCounter += 5;
+  }
 };
 
 
 const openUserModal = () => {
   createBigPicture();
   createComments();
+  commentsNumberCounter = 5;
+  checkQuantityComments();
+  commentsLoaderButton.addEventListener('click', checkQuantityComments);
   bigPictureContainer.classList.remove('hidden');
   bodyContainer.classList.add('modal-open');
-  // commentsCount.classList.add('hidden');
-  // commentsLoader.classList.add('hidden');
   document.addEventListener('keydown', onDocumentKeydown);
 };
 
 const closeUserModal = () => {
   bigPictureContainer.classList.add('hidden');
   bodyContainer.classList.remove('modal-open');
-  // commentsCount.classList.remove('hidden');
-  // commentsLoader.classList.remove('hidden');
+  commentsLoaderButton.removeEventListener('click', checkQuantityComments);
+  commentsLoaderButton.classList.remove('hidden');
   document.removeEventListener('keydown', onDocumentKeydown);
 };
 
