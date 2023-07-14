@@ -60,7 +60,7 @@ const setContainerState = (value) => {
 //обновление данных поля фильтра при обновлении
 const setFilterState = (currentName, saturation, currentUnit) => {
   imagePreview.style.filter = `${currentName}(${saturation}${currentUnit})`;
-  // console.log(saturation,currentName,currentUnit);
+  // console.log(saturation, currentName, currentUnit);
   effectSaturation.value = saturation;
 };
 
@@ -103,7 +103,6 @@ const updateEffects = (value) => {
     step,
     start: max,
   });
-
   setFilterState(name, max, unit);
 };
 
