@@ -1,7 +1,7 @@
 import { isEscapeKey } from '../utils/util.js';
 import { initScale, resetScale } from './scale.js';
 import { initEffects, updateEffects } from './effects-editor.js';
-import { initValidator, pristineValidate, resetPristine } from './validation.js';
+import { initValidator, validatePristine, resetPristine } from './validation.js';
 
 const uploadInput = document.querySelector('.img-upload__input');
 const uploadForm = document.querySelector('.img-upload__form');
@@ -31,7 +31,7 @@ const closeUploadForm = () => {
 const uploadInputChangeHandler = () => openUploadForm();
 
 const uploadFormSubmitHandler = (evt) => {
-  if (!pristineValidate()) {
+  if (!validatePristine()) {
     evt.preventDefault();
   }
 };

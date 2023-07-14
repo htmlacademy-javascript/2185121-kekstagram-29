@@ -1,11 +1,11 @@
-const COMMENT_LENGTH_INVALID_TEXT = 'Текст коментария должен быть не больше 140 символов!';
-const HASHTAG_INVALID_TEXT = 'У вас не валидный хэштег, попробуйте запись ...';
-const HASHTAG_INVALID_COUNT_TEXT = 'Хэштегов не должно быть больше пяти';
-const HASHTAG_INVALID_SAME_TEXT = 'Нельзя использовать один и тот же хэштег больше одного раза';
-
 const HASHTAGS_MAX_COUNT = 5;
 const COMMENTS_MAX_LENGTH = 140;
 const HASHTAG_TEMPLATE = /^#[a-zа-яё0-9]{1,19}$/i;
+
+const COMMENT_LENGTH_INVALID_TEXT = 'Длина комментария не может составлять больше 140 символов.';
+const HASHTAG_INVALID_TEXT = 'У вас не валидный хэштег, используйте запись в формате: #аяёaz09, максимальная длина одного хэш-тега 20 символов, включая решётку, хеш-тег не может состоять только из одной решётки, хэш-теги разделяются одним пробелом.';
+const HASHTAG_INVALID_COUNT_TEXT = 'Нельзя указать больше пяти хэш-тегов.';
+const HASHTAG_INVALID_SAME_TEXT = 'Один и тот же хэш-тег не может быть использован дважды.';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const textHashtag = document.querySelector('.text__hashtags');
@@ -18,25 +18,27 @@ const pristine = new Pristine(uploadForm, {
 
 const checkDescriptionLength = (value) => value.length <= COMMENTS_MAX_LENGTH;
 
+const createHashTags = (value) => value.trim().toLowerCase().split(' ');
+
 const checkHashtagCorrect = (value) => {
   if (!value.length) {
     return true;
   }
-  const hashtags = value.trim().split(' ');
+  const hashtags = createHashTags(value);
   return hashtags.every((element) => (HASHTAG_TEMPLATE.test(element)));
 };
 
 const checkHashtagsCount = (value) => {
-  const hashtags = value.trim().split(' ');
+  const hashtags = createHashTags(value);
   return hashtags.length <= HASHTAGS_MAX_COUNT;
 };
 
 const checkHashtagsSame = (value) => {
-  const hashtags = value.trim().toLowerCase().split(' ');
+  const hashtags = createHashTags(value);
   return hashtags.length === new Set(hashtags).size;
 };
 
-const pristineValidate = () => pristine.validate();
+const validatePristine = () => pristine.validate();
 const resetPristine = () => pristine.reset();
 
 const initValidator = () => {
@@ -46,4 +48,4 @@ const initValidator = () => {
   pristine.addValidator(textHashtag, checkHashtagsSame, HASHTAG_INVALID_SAME_TEXT, 1, true);
 };
 
-export { initValidator, pristineValidate, resetPristine };
+export { initValidator, validatePristine, resetPristine };
