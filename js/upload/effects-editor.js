@@ -51,22 +51,17 @@ const effectSaturation = document.querySelector('.effect-level__value');
 const setContainerState = (value) => {
   if (value === 'none') {
     sliderContainer.classList.add('hidden');
+    imagePreview.style.filter = 'none';
     return;
   }
   sliderContainer.classList.remove('hidden');
 };
 
 //обновление данных поля фильтра при обновлении
-const updateSlider = (name, unit) => {
-  slider.noUiSlider.on('update', () => {
-    if (name === 'none') {
-      imagePreview.style.filter = 'none';
-      return;
-    }
-    const saturation = slider.noUiSlider.get();
-    imagePreview.style.filter = `${name}(${saturation}${unit})`;
-    effectSaturation.value = saturation;
-  });
+const setFilterState = (currentName, saturation, currentUnit) => {
+  imagePreview.style.filter = `${currentName}(${saturation}${currentUnit})`;
+  // console.log(saturation,currentName,currentUnit);
+  effectSaturation.value = saturation;
 };
 
 //инициализация слайдера
@@ -77,35 +72,39 @@ const initEffects = (value) => {
 
   noUiSlider.create(slider, {
     range: {
-      'min': min,
-      'max': max
+      min,
+      max
     },
-    step: step,
+    step,
     start: max,
-    connect: 'lower',
-    // format: {
-    //   to: (value) => value.toFixed(1),
-    //   from: (value) => parseFloat(value, 10)
-    // }
+    connect: 'lower'
   });
-  updateSlider(name, unit);
+
+  slider.noUiSlider.on('update', () => {
+    const saturation = slider.noUiSlider.get();
+    setFilterState(name, saturation, unit);
+  });
 };
 
 //обновление эффектов слайдера
 const updateEffects = (value) => {
-  const { min, max, step, name, unit } = EFFECTS[value] || EFFECTS.default;
-
   setContainerState(value);
+  if (value === 'none') {
+    return;
+  }
+
+  const { min, max, step, name, unit } = EFFECTS[value] || EFFECTS.default;
 
   slider.noUiSlider.updateOptions({
     range: {
-      'min': min,
-      'max': max
+      min,
+      max
     },
-    step: step,
+    step,
     start: max,
   });
-  updateSlider(name, unit);
+
+  setFilterState(name, max, unit);
 };
 
 export { initEffects, updateEffects };

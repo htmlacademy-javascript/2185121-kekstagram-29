@@ -1,7 +1,7 @@
 const COMMENT_LENGTH_INVALID_TEXT = 'Текст коментария должен быть не больше 140 символов!';
 const HASHTAG_INVALID_TEXT = 'У вас не валидный хэштег, попробуйте запись ...';
 const HASHTAG_INVALID_COUNT_TEXT = 'Хэштегов не должно быть больше пяти';
-const HASHTAG_INVALID_SAME_TEXT = 'Нельзя использовать один и тот же хэштег больше обного раза';
+const HASHTAG_INVALID_SAME_TEXT = 'Нельзя использовать один и тот же хэштег больше одного раза';
 
 const HASHTAGS_MAX_COUNT = 5;
 const COMMENTS_MAX_LENGTH = 140;
@@ -19,7 +19,7 @@ const pristine = new Pristine(uploadForm, {
 const checkDescriptionLength = (value) => value.length <= COMMENTS_MAX_LENGTH;
 
 const checkHashtagCorrect = (value) => {
-  if (value.length === 0) {
+  if (!value.length) {
     return true;
   }
   const hashtags = value.trim().split(' ');

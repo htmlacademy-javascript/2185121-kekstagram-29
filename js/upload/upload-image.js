@@ -7,7 +7,7 @@ const uploadInput = document.querySelector('.img-upload__input');
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const imgUploadCancel = document.querySelector('.img-upload__cancel');
-const effectsList = document.querySelector('.effects__list');
+const effectsList = document.querySelector('.img-upload__effects');
 const currentEffectValue = effectsList.querySelector('input:checked').value;
 
 const onEffectsListChange = (evt) => updateEffects(evt.target.value);
