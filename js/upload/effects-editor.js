@@ -48,64 +48,64 @@ const sliderContainer = document.querySelector('.img-upload__effect-level');
 const slider = document.querySelector('.effect-level__slider');
 const effectSaturation = document.querySelector('.effect-level__value');
 
+let currentName;
+let currentUnit;
+
 const setContainerState = (value) => {
   if (value === 'none') {
     sliderContainer.classList.add('hidden');
+    imagePreview.style.filter = 'none';
     return;
   }
   sliderContainer.classList.remove('hidden');
-};
-
-//обновление данных поля фильтра при обновлении
-const updateSlider = (name, unit) => {
-  slider.noUiSlider.on('update', () => {
-    if (name === 'none') {
-      imagePreview.style.filter = 'none';
-      return;
-    }
-    const saturation = slider.noUiSlider.get();
-    imagePreview.style.filter = `${name}(${saturation}${unit})`;
-    effectSaturation.value = saturation;
-  });
 };
 
 //инициализация слайдера
 const initEffects = (value) => {
   const { min, max, step, name, unit } = EFFECTS[value] || EFFECTS.default;
 
+  currentName = name;
+  currentUnit = unit;
+
   setContainerState(value);
 
   noUiSlider.create(slider, {
     range: {
-      'min': min,
-      'max': max
+      min,
+      max
     },
-    step: step,
+    step,
     start: max,
-    connect: 'lower',
-    // format: {
-    //   to: (value) => value.toFixed(1),
-    //   from: (value) => parseFloat(value, 10)
-    // }
+    connect: 'lower'
   });
-  updateSlider(name, unit);
+
+  slider.noUiSlider.on('update', () => {
+    const saturation = slider.noUiSlider.get();
+    imagePreview.style.filter = `${currentName}(${saturation}${currentUnit})`;
+    effectSaturation.value = saturation;
+  });
 };
 
 //обновление эффектов слайдера
 const updateEffects = (value) => {
+  setContainerState(value);
+  if (value === 'none') {
+    return;
+  }
+
   const { min, max, step, name, unit } = EFFECTS[value] || EFFECTS.default;
 
-  setContainerState(value);
+  currentName = name;
+  currentUnit = unit;
 
   slider.noUiSlider.updateOptions({
     range: {
-      'min': min,
-      'max': max
+      min,
+      max
     },
-    step: step,
+    step,
     start: max,
   });
-  updateSlider(name, unit);
 };
 
 export { initEffects, updateEffects };
