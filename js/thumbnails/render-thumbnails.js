@@ -1,4 +1,3 @@
-import { createCards } from './data.js';
 import { showFullSizeImage } from './shows-full-size-image.js';
 
 const template = document.querySelector('#picture')
@@ -6,7 +5,6 @@ const template = document.querySelector('#picture')
   .querySelector('.picture');
 const container = document.querySelector('.pictures');
 const fragment = document.createDocumentFragment();
-const data = createCards();
 
 const createThumbnail = (picture) => {
   const newThumbnail = template.cloneNode(true);
@@ -24,7 +22,7 @@ const createThumbnail = (picture) => {
   return newThumbnail;
 };
 
-const renderThumbnails = () => {
+const renderThumbnails = (data) => {
   data.forEach((picture) => fragment.append(createThumbnail(picture)));
   container.append(fragment);
 };
