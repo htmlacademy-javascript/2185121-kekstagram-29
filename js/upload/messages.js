@@ -33,7 +33,6 @@ const createMessage = (value) => {
 
   document.body.append(message);
 
-  getHandler(value);
 };
 
 const deleteDocumentHandlers = () => {
@@ -78,6 +77,7 @@ function getHandler(value) {
 
 const initMessage = (value) => {
   createMessage(value);
+  getHandler(value);
 };
 
 export { initMessage };

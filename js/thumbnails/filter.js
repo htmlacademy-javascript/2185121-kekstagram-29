@@ -4,10 +4,9 @@ const filters = document.querySelector('.img-filters');
 const imgFiltersForm = document.querySelector('.img-filters__form');
 const container = document.querySelector('.pictures');
 
-const getFilteringData = (data) => {
-  // return data.slice('').sort((a, b) => a.comments.length - b.comments.length);
-  return data;
-};
+const getFilteringData = (data) => data;
+
+// return data.slice('').sort((a, b) => a.comments.length - b.comments.length);
 
 const initFilter = (data) => {
   filters.classList.remove('img-filters--inactive');

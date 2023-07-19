@@ -63,6 +63,7 @@ const imgUploadCancelClickHandler = () => closeUploadForm();
 
 const isInput = (evt) => evt.target.closest('.text__hashtags') || evt.target.closest('.text__description');
 const isPopup = () => Boolean(document.querySelector('.success')) || Boolean(document.querySelector('.error'));
+
 function onDocumentKeydown(evt) {
   if (isEscapeKey(evt) && !isInput(evt) && !isPopup()) {
     evt.preventDefault();
