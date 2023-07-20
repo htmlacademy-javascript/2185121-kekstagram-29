@@ -1,38 +1,39 @@
 import { isEscapeKey } from '../utils/util.js';
 
-const HEADER_TEXT = {
-  success: 'Изображение успешно загружено',
-  error: 'Ошибка загрузки файла'
-};
 
-const BUTTON_TEXT = {
-  success: 'Круто!',
-  error: 'Попробовать ещё раз'
-};
+// const createMessage = (value) => {
+//   const message = document.createElement('section');
 
+//   message.classList.add(value);
+//   message.append(document.createElement('div'));
 
-const createMessage = (value) => {
-  const message = document.createElement('section');
+//   const innerContainer = message.querySelector('div');
+//   innerContainer.classList.add(`${value}__inner`);
+//   innerContainer.append(document.createElement('h2'));
+//   innerContainer.append(document.createElement('button'));
 
-  message.classList.add(value);
-  message.append(document.createElement('div'));
+//   const header = innerContainer.querySelector('h2');
+//   header.classList.add(`${value}__title`);
+//   header.textContent = HEADER_TEXT[value];
 
-  const innerContainer = message.querySelector('div');
-  innerContainer.classList.add(`${value}__inner`);
-  innerContainer.append(document.createElement('h2'));
-  innerContainer.append(document.createElement('button'));
+//   const button = innerContainer.querySelector('button');
+//   button.classList.add(`${value}__button`);
+//   button.type = 'button';
+//   button.textContent = BUTTON_TEXT[value];
 
-  const header = innerContainer.querySelector('h2');
-  header.classList.add(`${value}__title`);
-  header.textContent = HEADER_TEXT[value];
+//   document.body.append(message);
 
-  const button = innerContainer.querySelector('button');
-  button.classList.add(`${value}__button`);
-  button.type = 'button';
-  button.textContent = BUTTON_TEXT[value];
+// };
 
-  document.body.append(message);
+const createMessage = (value, headerText, btnState, btnText) => {
+  const newMessage = `<section class="${value}">
+  <div class="${value}__inner">
+    <h2 class="${value}__title">${headerText}</h2>
+    ${btnState ? `<button type="button" class="${value}__button">${btnText}</button>` : ''}
+  </div>
+</section>`;
 
+  document.body.insertAdjacentHTML('beforeend', newMessage);
 };
 
 const deleteDocumentHandlers = () => {
@@ -75,9 +76,9 @@ function getHandler(value) {
   document.addEventListener('keydown', onPopupKeydown);
 }
 
-const initMessage = (value) => {
-  createMessage(value);
+const initMessage = (value, headerText, btnState, btnText = '') => {
+  createMessage(value, headerText, btnState, btnText);
   getHandler(value);
 };
 
-export { initMessage };
+export { initMessage, createMessage };
