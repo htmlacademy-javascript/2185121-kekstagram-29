@@ -5,11 +5,21 @@ import { initValidator, validatePristine, resetPristine } from './validation.js'
 import { sendData } from '../utils/api.js';
 import { initMessage } from './messages.js';
 
-const DATA_URL = 'https://29.javascript.pages.academy/kekstagram';
+const SEND_URL = 'https://29.javascript.pages.academy/kekstagram';
 
 const MESSAGE_STATUS = {
   success: 'success',
   error: 'error'
+};
+
+const HEADER_TEXT = {
+  success: 'Изображение успешно загружено',
+  error: 'Ошибка загрузки файла'
+};
+
+const BUTTON_TEXT = {
+  success: 'Круто!',
+  error: 'Попробовать ещё раз'
 };
 
 const uploadInput = document.querySelector('.img-upload__input');
@@ -41,21 +51,26 @@ const closeUploadForm = () => {
 
 const uploadInputChangeHandler = () => openUploadForm();
 
+const setButtonState = (state) => {
+  submitButton.disabled = state;
+};
+
 const uploadSuccess = () => {
-  initMessage(MESSAGE_STATUS.success);
+  initMessage(MESSAGE_STATUS.success, HEADER_TEXT.success, true, BUTTON_TEXT.success);
+  setButtonState(false);
   closeUploadForm();
 };
 
 const uploadError = () => {
-  initMessage(MESSAGE_STATUS.error);
+  initMessage(MESSAGE_STATUS.error, HEADER_TEXT.error, true, BUTTON_TEXT.error);
+  setButtonState(false);
 };
 
-const uploadFormSubmitHandler = async (evt) => {
+const uploadFormSubmitHandler = (evt) => {
   evt.preventDefault();
   if (validatePristine()) {
-    submitButton.disabled = true;
-    await sendData(DATA_URL, new FormData(evt.target), uploadSuccess, uploadError);
-    submitButton.disabled = false;
+    setButtonState(true);
+    sendData(SEND_URL, new FormData(evt.target), uploadSuccess, uploadError);
   }
 };
 
