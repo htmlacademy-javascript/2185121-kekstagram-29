@@ -48,11 +48,8 @@ const sliderContainer = document.querySelector('.img-upload__effect-level');
 const slider = document.querySelector('.effect-level__slider');
 const effectSaturation = document.querySelector('.effect-level__value');
 
-let currentName;
-let currentUnit;
-
 const setContainerState = (value) => {
-  if (value === 'none') {
+  if (value === 'none' || !value) {
     sliderContainer.classList.add('hidden');
     imagePreview.style.filter = 'none';
     return;
@@ -60,12 +57,8 @@ const setContainerState = (value) => {
   sliderContainer.classList.remove('hidden');
 };
 
-//инициализация слайдера
-const initEffects = (value) => {
+const createSlider = (value) => {
   const { min, max, step, name, unit } = EFFECTS[value] || EFFECTS.default;
-
-  currentName = name;
-  currentUnit = unit;
 
   setContainerState(value);
 
@@ -81,31 +74,17 @@ const initEffects = (value) => {
 
   slider.noUiSlider.on('update', () => {
     const saturation = slider.noUiSlider.get();
-    imagePreview.style.filter = `${currentName}(${saturation}${currentUnit})`;
+    imagePreview.style.filter = `${name}(${saturation}${unit})`;
     effectSaturation.value = saturation;
   });
 };
 
-//обновление эффектов слайдера
-const updateEffects = (value) => {
-  setContainerState(value);
-  if (value === 'none') {
-    return;
+//инициализация слайдера
+const initEffects = (value) => {
+  if (slider.noUiSlider) {
+    slider.noUiSlider.destroy();
   }
-
-  const { min, max, step, name, unit } = EFFECTS[value] || EFFECTS.default;
-
-  currentName = name;
-  currentUnit = unit;
-
-  slider.noUiSlider.updateOptions({
-    range: {
-      min,
-      max
-    },
-    step,
-    start: max,
-  });
+  createSlider(value);
 };
 
-export { initEffects, updateEffects };
+export { initEffects };
