@@ -3,10 +3,9 @@ import { initScale, resetScale } from './scale.js';
 import { initEffects } from './effects-editor.js';
 import { initValidator, validatePristine, resetPristine } from './validation.js';
 import { sendData } from '../utils/api.js';
-import { initMessage } from './messages.js';
+import { initMessage } from '../utils/messages.js';
 
 const SEND_URL = 'https://29.javascript.pages.academy/kekstagram';
-
 const MESSAGE_STATUS = {
   success: 'success',
   error: 'error'
@@ -55,17 +54,19 @@ const setButtonState = (state) => {
   submitButton.disabled = state;
 };
 
+// функции сообщений об ошибке/успехе
 const uploadSuccess = () => {
-  initMessage(MESSAGE_STATUS.success, HEADER_TEXT.success, true, BUTTON_TEXT.success);
-  setButtonState(false);
   closeUploadForm();
+  initMessage(MESSAGE_STATUS.success, HEADER_TEXT.success, BUTTON_TEXT.success);
+  setButtonState(false);
 };
 
 const uploadError = () => {
-  initMessage(MESSAGE_STATUS.error, HEADER_TEXT.error, true, BUTTON_TEXT.error);
+  initMessage(MESSAGE_STATUS.error, HEADER_TEXT.error, BUTTON_TEXT.error);
   setButtonState(false);
 };
 
+//обработчик отправки формы
 const uploadFormSubmitHandler = (evt) => {
   evt.preventDefault();
   if (validatePristine()) {
@@ -77,10 +78,9 @@ const uploadFormSubmitHandler = (evt) => {
 const imgUploadCancelClickHandler = () => closeUploadForm();
 
 const isInput = (evt) => evt.target.closest('.text__hashtags') || evt.target.closest('.text__description');
-const isPopup = () => Boolean(document.querySelector('.success')) || Boolean(document.querySelector('.error'));
 
 function onDocumentKeydown(evt) {
-  if (isEscapeKey(evt) && !isInput(evt) && !isPopup()) {
+  if (isEscapeKey(evt) && !isInput(evt)) {
     evt.preventDefault();
     closeUploadForm();
   }
