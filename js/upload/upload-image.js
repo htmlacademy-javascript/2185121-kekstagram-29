@@ -13,13 +13,17 @@ const MESSAGE_STATUS = {
 
 const HEADER_TEXT = {
   success: 'Изображение успешно загружено',
-  error: 'Ошибка загрузки файла'
+  error: 'Ошибка загрузки файла',
+  'error_file': 'Недопустимое расширение для выбранного файла'
 };
 
 const BUTTON_TEXT = {
   success: 'Круто!',
-  error: 'Попробовать ещё раз'
+  error: 'Попробовать ещё раз',
+  'error_file': 'Понятно'
 };
+
+const EXTENSION_REGEXP = /.\.(jpg|png|jpeg|gif|webp)$/i;
 
 const uploadInput = document.querySelector('.img-upload__input');
 const uploadForm = document.querySelector('.img-upload__form');
@@ -28,14 +32,16 @@ const imgUploadCancel = document.querySelector('.img-upload__cancel');
 const effectsList = document.querySelector('.img-upload__effects');
 const currentEffectValue = effectsList.querySelector('input:checked').value;
 const submitButton = document.querySelector('.img-upload__submit');
+const imagePreview = document.querySelector('.img-upload__preview img');
+const effectsPreviewImages = document.querySelectorAll('.effects__preview');
 
-const onEffectsListChange = (evt) => initEffects(evt.target.value);
+const effectsListChangeHandler = (evt) => initEffects(evt.target.value);
 
 
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('keydown', documentKeydownHandler);
 };
 
 const closeUploadForm = () => {
@@ -45,10 +51,23 @@ const closeUploadForm = () => {
   initEffects(currentEffectValue);
   uploadOverlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
+  document.removeEventListener('keydown', documentKeydownHandler);
 };
 
-const uploadInputChangeHandler = () => openUploadForm();
+const showImagePreview = (evt) => {
+  const fileUrl = URL.createObjectURL(evt.target.files[0]);
+  imagePreview.src = fileUrl;
+  effectsPreviewImages.forEach((effect) => (effect.style.backgroundImage = `url(${fileUrl})`));
+};
+
+const uploadInputChangeHandler = (evt) => {
+  if (evt.target.value.match(EXTENSION_REGEXP)) {
+    openUploadForm();
+    showImagePreview(evt);
+    return;
+  }
+  initMessage(MESSAGE_STATUS.error, HEADER_TEXT.error_file, BUTTON_TEXT.error_file);
+};
 
 const setButtonState = (state) => {
   submitButton.disabled = state;
@@ -79,7 +98,7 @@ const imgUploadCancelClickHandler = () => closeUploadForm();
 
 const isInput = (evt) => evt.target.closest('.text__hashtags') || evt.target.closest('.text__description');
 
-function onDocumentKeydown(evt) {
+function documentKeydownHandler(evt) {
   if (isEscapeKey(evt) && !isInput(evt)) {
     evt.preventDefault();
     closeUploadForm();
@@ -90,7 +109,7 @@ const initUploadForm = () => {
   initValidator();
   initScale();
   initEffects(currentEffectValue);
-  effectsList.addEventListener('change', onEffectsListChange);
+  effectsList.addEventListener('change', effectsListChangeHandler);
   uploadInput.addEventListener('change', uploadInputChangeHandler);
   uploadForm.addEventListener('submit', uploadFormSubmitHandler);
   imgUploadCancel.addEventListener('click', imgUploadCancelClickHandler);
