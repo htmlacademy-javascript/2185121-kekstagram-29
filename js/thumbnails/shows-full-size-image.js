@@ -58,34 +58,34 @@ const fillUserModal = (data) => {
 const openUserModal = () => {
   bigPictureContainer.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  buttonClose.addEventListener('click', onButtonCloseClick);
-  commentsLoaderButton.addEventListener('click', onCommentsLoaderButtonClick);
-  document.addEventListener('keydown', onDocumentKeydown);
+  buttonClose.addEventListener('click', buttonCloseClickHandler);
+  commentsLoaderButton.addEventListener('click', commentsLoaderButtonClickHandler);
+  document.addEventListener('keydown', documentKeydownHandler);
 };
 
 const closeUserModal = () => {
   bigPictureContainer.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  buttonClose.removeEventListener('click', onButtonCloseClick);
-  commentsLoaderButton.removeEventListener('click', onCommentsLoaderButtonClick);
-  document.removeEventListener('keydown', onDocumentKeydown);
+  buttonClose.removeEventListener('click', buttonCloseClickHandler);
+  commentsLoaderButton.removeEventListener('click', commentsLoaderButtonClickHandler);
+  document.removeEventListener('keydown', documentKeydownHandler);
   showingComments = 0;
 };
 
 //функции обработчиков
-function onDocumentKeydown(evt) {
+function documentKeydownHandler(evt) {
   if (isEscapeKey(evt) && !evt.target.closest('.social__footer-text')) {
     evt.preventDefault();
     closeUserModal();
   }
 }
 
-function onCommentsLoaderButtonClick(evt) {
+function commentsLoaderButtonClickHandler(evt) {
   evt.preventDefault();
   renderComments();
 }
 
-function onButtonCloseClick(evt) {
+function buttonCloseClickHandler(evt) {
   evt.preventDefault();
   closeUserModal();
 }
