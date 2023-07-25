@@ -4,7 +4,6 @@ const COMMENT_COUNTER = 5;
 
 const bigPictureContainer = document.querySelector('.big-picture');
 const buttonClose = document.querySelector('.big-picture__cancel');
-const container = document.querySelector('.pictures');
 const commentsCount = document.querySelector('.social__comment-count');
 const bigPictureImage = document.querySelector('.big-picture__img img');
 const bigPictureDescription = document.querySelector('.social__caption');
@@ -55,6 +54,11 @@ const fillUserModal = (data) => {
   renderComments();
 };
 
+const commentsLoaderButtonClickHandler = (evt) => {
+  evt.preventDefault();
+  renderComments();
+};
+
 const openUserModal = () => {
   bigPictureContainer.classList.remove('hidden');
   document.body.classList.add('modal-open');
@@ -72,7 +76,6 @@ const closeUserModal = () => {
   showingComments = 0;
 };
 
-//функции обработчиков
 function documentKeydownHandler(evt) {
   if (isEscapeKey(evt) && !evt.target.closest('.social__footer-text')) {
     evt.preventDefault();
@@ -80,21 +83,12 @@ function documentKeydownHandler(evt) {
   }
 }
 
-function commentsLoaderButtonClickHandler(evt) {
-  evt.preventDefault();
-  renderComments();
-}
-
 function buttonCloseClickHandler(evt) {
   evt.preventDefault();
   closeUserModal();
 }
 
-//Функция создания большой картинки и проверка что есть на странице контейнер,чтоб код не ломался
 const showFullSizeImage = (data) => {
-  if (!container) {
-    return;
-  }
   commentsContainer.textContent = '';
   comments = data.comments;
   fillUserModal(data);

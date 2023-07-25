@@ -3,7 +3,6 @@ import { isEscapeKey } from './util.js';
 let message;
 let isOpen = false;
 
-//функция для передачи DOM элемента, а не текста разметки
 const createElement = (template) => {
   const div = document.createElement('div');
   div.innerHTML = template;
@@ -36,6 +35,8 @@ function closeMessage() {
   }
 }
 
+const messageButtonClickHandler = () => closeMessage();
+
 const initMessage = (type, text, buttonText) => {
   message = createElement(createMessage(type, text, buttonText));
   document.body.append(message);
@@ -51,7 +52,7 @@ const initMessage = (type, text, buttonText) => {
   document.addEventListener('keydown', documentKeydownHandler, { capture: true });
 
   if (buttonText) {
-    message.querySelector(`.${type}__button`).addEventListener('click', closeMessage);
+    message.querySelector(`.${type}__button`).addEventListener('click', messageButtonClickHandler);
   }
 
   if (!document.body.classList.contains('modal-open')) {

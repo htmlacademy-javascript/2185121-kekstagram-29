@@ -6,21 +6,23 @@ import { sendData } from '../utils/api.js';
 import { initMessage } from '../utils/messages.js';
 
 const SEND_URL = 'https://29.javascript.pages.academy/kekstagram';
-const MESSAGE_STATUS = {
-  success: 'success',
-  error: 'error'
+
+const SEND_SUCCESS = {
+  class: 'success',
+  text: 'Изображение успешно загружено',
+  buttonText: 'Круто!'
 };
 
-const HEADER_TEXT = {
-  success: 'Изображение успешно загружено',
-  error: 'Ошибка загрузки файла',
-  'error_file': 'Недопустимое расширение для выбранного файла'
+const SEND_ERROR = {
+  class: 'error',
+  text: 'Ошибка загрузки файла',
+  buttonText: 'Попробовать ещё раз'
 };
 
-const BUTTON_TEXT = {
-  success: 'Круто!',
-  error: 'Попробовать ещё раз',
-  'error_file': 'Понятно'
+const FILE_ERROR = {
+  class: 'error',
+  text: 'Недопустимое расширение для выбранного файла',
+  buttonText: 'Понятно'
 };
 
 const EXTENSION_REGEXP = /.\.(jpg|png|jpeg|gif|webp)$/i;
@@ -66,7 +68,7 @@ const uploadInputChangeHandler = (evt) => {
     showImagePreview(evt);
     return;
   }
-  initMessage(MESSAGE_STATUS.error, HEADER_TEXT.error_file, BUTTON_TEXT.error_file);
+  initMessage(FILE_ERROR.class, FILE_ERROR.text, FILE_ERROR.buttonText);
 };
 
 const setButtonState = (state) => {
@@ -76,12 +78,12 @@ const setButtonState = (state) => {
 // функции сообщений об ошибке/успехе
 const uploadSuccess = () => {
   closeUploadForm();
-  initMessage(MESSAGE_STATUS.success, HEADER_TEXT.success, BUTTON_TEXT.success);
+  initMessage(SEND_SUCCESS.class, SEND_SUCCESS.text, SEND_SUCCESS.buttonText);
   setButtonState(false);
 };
 
 const uploadError = () => {
-  initMessage(MESSAGE_STATUS.error, HEADER_TEXT.error, BUTTON_TEXT.error);
+  initMessage(SEND_ERROR.class, SEND_ERROR.text, SEND_ERROR.buttonText);
   setButtonState(false);
 };
 
