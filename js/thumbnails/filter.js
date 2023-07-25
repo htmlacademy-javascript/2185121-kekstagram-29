@@ -12,9 +12,9 @@ const filters = document.querySelector('.img-filters');
 const filtersForm = document.querySelector('.img-filters__form');
 const picturesContainer = document.querySelector('.pictures');
 
-const filterByCommentsCount = (data) => (data.slice().sort((a, b) => b.comments.length - a.comments.length));
+const filterByCommentsCount = (data) => data.slice().sort((a, b) => b.comments.length - a.comments.length);
 
-const filterInRandomOrder = (data) => {
+const filterByRandomOrder = (data) => {
   const dataClone = data.slice();
   for (let i = dataClone.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -27,7 +27,7 @@ const filterInRandomOrder = (data) => {
 const getFilteringData = (id, data) => {
   switch (id) {
     case FILTERS.random:
-      return filterInRandomOrder(data);
+      return filterByRandomOrder(data);
     case FILTERS.discussed:
       return filterByCommentsCount(data);
     default:
@@ -35,9 +35,9 @@ const getFilteringData = (id, data) => {
   }
 };
 
-const renderFilteringPictures = (filter, data) => {
+const renderFilteringPictures = (id, data) => {
   picturesContainer.querySelectorAll('.picture').forEach((picture) => picture.remove());
-  renderThumbnails(getFilteringData(filter, data));
+  renderThumbnails(getFilteringData(id, data));
 };
 
 const renderPictures = debounce((id, data) => renderFilteringPictures(id, data), DELAY);
@@ -45,11 +45,12 @@ const renderPictures = debounce((id, data) => renderFilteringPictures(id, data),
 const initFilter = (data) => {
   filters.classList.remove('img-filters--inactive');
 
-  filtersForm.addEventListener('click', (event) => {
-    if (event.target.closest('.img-filters__button') && !event.target.classList.contains('img-filters__button--active')) {
-      document.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-      event.target.classList.add('img-filters__button--active');
-      renderPictures(event.target.id, data);
+  filtersForm.addEventListener('click', (evt) => {
+    const buttonActive = document.querySelector('.img-filters__button--active');
+    if (evt.target.closest('.img-filters__button') && evt.target !== buttonActive) {
+      buttonActive.classList.remove('img-filters__button--active');
+      evt.target.classList.add('img-filters__button--active');
+      renderPictures(evt.target.id, data);
     }
   });
 };
